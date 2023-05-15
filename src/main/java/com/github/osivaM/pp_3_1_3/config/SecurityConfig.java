@@ -1,10 +1,9 @@
 package com.github.osivaM.pp_3_1_3.config;
 
-import com.github.osivaM.pp_3_1_3.services.SecurityUserDetailsService;
+import com.github.osivaM.pp_3_1_3.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,14 +17,13 @@ import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfig {
 
-    private final SecurityUserDetailsService securityUserDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public SecurityConfig(SecurityUserDetailsService securityUserDetailsService) {
-        this.securityUserDetailsService = securityUserDetailsService;
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
@@ -33,7 +31,9 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/auth/authorization", "/auth/registration", "error").permitAll();
+                    auth.requestMatchers("/auth/authorization", "/error").permitAll();
+                    auth.requestMatchers("/admin/**").hasRole("ADMIN");
+                    auth.requestMatchers("/user").hasRole("USER");
                     auth.anyRequest().authenticated();
                 })
                 .formLogin(log -> {
@@ -42,7 +42,7 @@ public class SecurityConfig {
                     log.successHandler(authenticationSuccessHandler());
                     log.failureUrl("/auth/authorization?error");
                 })
-                .userDetailsService(securityUserDetailsService)
+                .userDetailsService(userDetailsService)
                 .build();
     }
 
@@ -56,10 +56,10 @@ public class SecurityConfig {
         return (request, response, authentication) -> {
             Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
-            if (roles.contains("ROLE_USER")) {
-                response.sendRedirect("user");
-            } else {
+            if (roles.contains("ROLE_ADMIN")) {
                 response.sendRedirect("admin");
+            } else {
+                response.sendRedirect("user");
             }
         };
     }

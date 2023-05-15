@@ -13,8 +13,9 @@
     <input type="text" th:field="*{lastName}" id="lastName"/>
     <label for="age">Age:</label>
     <input type="number" th:field="*{age}" id="age"/>
-    <input type="hidden" th:field="*{password}"/>
-    <input type="hidden" th:field="*{roles}">
+    <label for="password">Password:</label>
+    <input type="text" th:field="*{password}" id="password"/>
+<!--    <input type="hidden" th:field="*{roles}">-->
     <input type="submit" value="Update"/>
 </form>
 </body>

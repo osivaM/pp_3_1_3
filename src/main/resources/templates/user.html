@@ -9,9 +9,16 @@
     <table>
         <tbody>
         <th:block th:object="${user}">
+            <td>Name:</td>
             <td th:text="${user.name}"/>
+            <td>Last Name:</td>
             <td th:text="${user.lastName}"/>
+            <td>Age:</td>
             <td th:text="${user.age}"/>
+            <td>Password:</td>
+            <td th:text="${user.password}"/>
+            <td>Roles:</td>
+            <td th:text="${user.roles}"/>
         </th:block>
         </tbody>
     </table>
