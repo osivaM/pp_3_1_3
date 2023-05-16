@@ -1,16 +1,13 @@
 package com.github.osivaM.pp_3_1_3.controllers;
 
+import com.github.osivaM.pp_3_1_3.models.Role;
 import com.github.osivaM.pp_3_1_3.models.User;
 import com.github.osivaM.pp_3_1_3.services.RoleService;
 import com.github.osivaM.pp_3_1_3.services.UserService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
 
 @Controller
 @RequestMapping("admin")
@@ -37,15 +34,14 @@ public class AdminController {
     @GetMapping("/create")
     public String createUser(Model model) {
         model.addAttribute("user", new User());
+        model.addAttribute("roles", roleService.getAllRoles());
 
         return "create";
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
-
-        user.setRoles(Collections.singletonList(roleService.getRoleByRole("ROLE_USER")));
-        roleService.getRoleByRole("ROLE_USER").setUser(Collections.singletonList(user));
+    public String create(@ModelAttribute("user") User user, @ModelAttribute("roles") Role role) {
+        role.getUser().add(user);
         userService.createUser(user);
 
         return "redirect:/admin";
@@ -54,13 +50,13 @@ public class AdminController {
     @GetMapping("/update/{id}")
     public String updateUser(Model model, @PathVariable("id") Long id) {
         model.addAttribute("user", userService.getUserById(id));
+        model.addAttribute("roles", roleService.getAllRoles());
 
         return "update";
     }
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("user") User user) {
-        user.setRoles(userService.getUserById(user.getId()).getRoles());
         userService.updateUser(user);
 
         return "redirect:/admin";

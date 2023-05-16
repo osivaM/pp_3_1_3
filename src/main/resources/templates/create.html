@@ -6,18 +6,23 @@
     <title>Create User</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{/admin/create}" th:object="${user}">
+<form th:method="POST" th:action="@{/admin/create}">
     <label for="name">Name:</label>
-    <input type="text" th:field="*{name}" id="name">
+    <input type="text" th:field="*{user.name}" id="name">
     <br/>
     <label for="lastName">Last name:</label>
-    <input type="text" th:field="*{lastName}" id="lastName">
+    <input type="text" th:field="*{user.lastName}" id="lastName">
     <br/>
     <label for="age">Age:</label>
-    <input type="number" th:field="*{age}" id="age">
+    <input type="number" th:field="*{user.age}" id="age">
     <br/>
     <label for="password">Password:</label>
-    <input type="text" th:field="*{password}" id="password">
+    <input type="text" th:field="*{user.password}" id="password">
+    <br/>
+    <label for="roles">Role:</label>
+    <select id="roles" th:field="*{user.roles}">
+        <option th:each="role: ${roles}" th:value="${role.id}" th:text="${role.role}"></option>
+    </select>
     <br/>
     <input type="submit" value="Add new user"/>
 </form>

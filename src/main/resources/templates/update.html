@@ -13,9 +13,11 @@
     <input type="text" th:field="*{lastName}" id="lastName"/>
     <label for="age">Age:</label>
     <input type="number" th:field="*{age}" id="age"/>
-    <label for="password">Password:</label>
-    <input type="text" th:field="*{password}" id="password"/>
-<!--    <input type="hidden" th:field="*{roles}">-->
+    <input type="hidden" th:field="*{password}"/>
+    <label for="role">Role:</label>
+    <select id="role" th:field="*{roles}">
+        <option th:each="role: ${roles}" th:value="${role.id}" th:text="${role.role}"></option>
+    </select>
     <input type="submit" value="Update"/>
 </form>
 </body>
